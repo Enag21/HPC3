@@ -26,8 +26,15 @@ int main(int argc, char *argv[]) {
 	double memory, gflops, flPtOp;
 	double start_t, end_t;
 	double total_t;
+	int flag;
 
-	printf("Size\tMemory[kB]\tMflop/s\t\tCPUtime\t\tDataTransferTime\tRuntimeWithoutLoads\n");
+	if (argc == 2){
+		flag=atoi(argv[1]);
+	}
+
+	printf("%d\n", omp_get_num_devices());
+
+	printf("Size\tMemory[kB]\tGflop/s\t\tCPUtime\t\tDataTransferTime\tRuntimeWithoutLoads\n");
 	
 	for (i=0;i<n;i++){
 		double* mat1 = matrix(S[i],S[i],var1);	
@@ -35,18 +42,32 @@ int main(int argc, char *argv[]) {
 		double* vec2 = vector(S[i],0);
 		double loadingTime = 0.0;
 
-		start_t = omp_get_wtime();
-		for (j=0;j<I;j++){
-			loadingTime += mxv(S[i],S[i], vec2, mat1, vec1);
+		if (flag==0){
+			start_t = omp_get_wtime();
+			for (j=0;j<I;j++){
+				loadingTime += mxv_single(S[i],S[i], vec2, mat1, vec1);
+			}
+			end_t = omp_get_wtime();
 		}
-		end_t = omp_get_wtime();
+		else if (flag==1){
+			start_t = omp_get_wtime();
+			for (j=0;j<I;j++){
+				loadingTime += mxv_multi(S[i],S[i], vec2, mat1, vec1);
+			}
+			end_t = omp_get_wtime();
+		}
+		else{
+			fprintf(stderr,"Use this properly nimrod\n");
+			return(1);
+		}
+		
 		total_t = end_t - start_t;
 		free(mat1);
 		free(vec1);
 		free(vec2);
 	
 		flPtOp = S[i] * (2.0 * S[i] - 1.0); // floating point operations: M(2N-1)
-		gflops = 1e-6 * I * flPtOp / total_t;
+		gflops = 1e-9 * I * flPtOp / (total_t - loadingTime);
 		memory = ((S[i] * S[i] + 2*S[i]) * sizeof S[i]) / 1024.0; // M*M + 2*N * bytes / kB
 
 		printf("%d\t%f\t%f\t%f\t%f\t\t%f\n",S[i],memory,gflops,total_t, loadingTime, total_t - loadingTime);
