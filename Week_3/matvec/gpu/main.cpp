@@ -93,7 +93,10 @@ void mxv(int m, int n, double* a, double* b, double* c){
 	}
 	int i,j;
 	double sum;
-	#pragma omp parallel for private(i,j,sum)
+	#pragma omp target teams loop \
+		num_teams(108) thread_limit(64) \
+		map(to: b[0: m * n], c[0:m]) map(from: a[0:m]) \
+		private(i, j, sum) 
 	for (i=0;i<m;i++){
 		sum = 0.0;
 		for (j=0;j<n;j++){
