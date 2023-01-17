@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
 	int var2 = 2;
 	int n = sizeof S / sizeof S[0];
 	int I = 75;
-	double memory, mflops, flPtOp;
+	double memory, gflops, flPtOp;
 	double start_t, end_t;
 	double total_t;
 
@@ -46,10 +46,10 @@ int main(int argc, char *argv[]) {
 		free(vec2);
 	
 		flPtOp = S[i] * (2.0 * S[i] - 1.0); // floating point operations: M(2N-1)
-		mflops = 1e-6 * I * flPtOp / total_t;
+		gflops = 1e-6 * I * flPtOp / total_t;
 		memory = ((S[i] * S[i] + 2*S[i]) * sizeof S[i]) / 1024.0; // M*M + 2*N * bytes / kB
 
-		printf("%d\t%f\t%f\t%f\t%f\t\t%f\n",S[i],memory,mflops,total_t, loadingTime, total_t - loadingTime);
+		printf("%d\t%f\t%f\t%f\t%f\t\t%f\n",S[i],memory,gflops,total_t, loadingTime, total_t - loadingTime);
 	}
 
     //double fpOperations{N * (2.0 * N - 1.0)}; 

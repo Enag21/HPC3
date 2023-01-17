@@ -16,7 +16,7 @@ double mxv(int m, int n, double* a, double* b, double* c){
 	#pragma omp target data map(to: b[0: m * n], c[0:m]) map(from: a[0:m])
 	{
 		double t = omp_get_wtime();
-		#pragma omp target teams loop \
+		#pragma omp target teams distribute parallel for \
 			num_teams(108) thread_limit(64) \
 			map(to: b[0: m * n], c[0:m]) map(from: a[0:m]) \
 			private(i, j, sum) 
