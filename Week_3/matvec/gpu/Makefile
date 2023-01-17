@@ -1,23 +1,27 @@
-TARGET= matvec
-OBJS  = main.o \
-        matvec.o \
-        alloc2d.o \
+CC	= gcc
+DEBUG = -g -Wall
+OPT	= -std=gnu99 -fopenmp
+POPT =  -O3 -ffast-math -ftree-parallelize-loops=4
+AUTOPAR = -g -fast -xautopar -xreduction -xloopinfo
+CFLAGS= $(OPT) $(DEBUG) 
 
-CC	= nvc
-CXX	= nvc++
+SOURCES = main.c
+OBJS = $(SOURCES:.c=.o)
 
-OPT	= -g -fast -Msafeptr -Minfo -acc -mp=gpu -gpu=pinned -gpu=cc80 -gpu=lineinfo -cuda -mp=noautopar
-ISA	= 
-PARA	= 
-INC   = -I$(CUDA_ROOT)/include -I/appl/nvhpc/2022_2211/Linux_x86_64/22.11/examples/OpenMP/SDK/include
-LIBS	= -lcuda -L$(CUDA_ROOT)/lib64 -lcudart -lcublas
+all: omp serial parallel 
 
-CFLAGS = $(OPT) $(INC) $(ISA) $(PARA) $(XOPT)
-CXXFLAGS = $(OPT) $(INC) $(ISA) $(PARA) $(XOPT)
+omp: $(OBJS)
+	$(CC) -o $@ $(CFLAGS) $(OBJS)
 
-all: $(TARGET)
+serial: $(OBJS)
+	$(CC) -o $@ $(CFLAGS) $(OBJS) 
 
-$(TARGET): $(OBJS) 
-	$(CXX) $(CXXFLAGS) -o $@ $(OBJS) $(LIBS)
+parallel: $(OBJS)
+	$(CC) -o $@ $(CFLAGS) $(POPT) $(OBJS) 
+
+
 clean:
-	@/bin/rm -f *.o $(TARGET)
+	@/bin/rm -f $(OBJS) core
+
+realclean: clean
+	@/bin/rm -f serial parallel omp
