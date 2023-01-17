@@ -27,16 +27,17 @@ int main(int argc, char *argv[]) {
 	double start_t, end_t;
 	double total_t;
 
-	printf("Size\tMemory[kB]\tMflop/s\t\tCPUtime\n");
+	printf("Size\tMemory[kB]\tMflop/s\t\tCPUtime\t\tDataTransferTime\tRuntimeWithoutLoads\n");
 	
 	for (i=0;i<n;i++){
 		double* mat1 = matrix(S[i],S[i],var1);	
 		double* vec1 = vector(S[i],var2);
 		double* vec2 = vector(S[i],0);
+		double loadingTime = 0.0;
 
 		start_t = omp_get_wtime();
 		for (j=0;j<I;j++){
-			mxv(S[i],S[i], vec2, mat1, vec1);
+			loadingTime += mxv(S[i],S[i], vec2, mat1, vec1);
 		}
 		end_t = omp_get_wtime();
 		total_t = end_t - start_t;
@@ -48,7 +49,7 @@ int main(int argc, char *argv[]) {
 		mflops = 1e-6 * I * flPtOp / total_t;
 		memory = ((S[i] * S[i] + 2*S[i]) * sizeof S[i]) / 1024.0; // M*M + 2*N * bytes / kB
 
-		printf("%d\t%f\t%f\t%f\n",S[i],memory,mflops,total_t);
+		printf("%d\t%f\t%f\t%f\t%f\t\t%f\n",S[i],memory,mflops,total_t, loadingTime, total_t - loadingTime);
 	}
 
     //double fpOperations{N * (2.0 * N - 1.0)}; 
