@@ -1,12 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "mxv.h"
+#include "alloc.h"
 #ifdef _OPENMP
 #include <omp.h>
 #endif
 
-double* matrix(size_t m, size_t n, double val);
-double* vector(size_t m, double val);
-void mxv(int m, int n, double* a, double* b, double* c);
+
 
 int main(int argc, char *argv[]) {
 	int i,j;
@@ -60,49 +60,4 @@ int main(int argc, char *argv[]) {
 	return(0);
 }
 
-double* matrix(size_t m, size_t n, double val){
-	int i;
-	if (m <= 0 || n <= 0)
-	return NULL;
 
-	double* A = (double*)malloc(m*n * sizeof(double));
-
-	for(i=0; i< m*n; i++){
-		A[i] = val;
-	}
-	return A;
-}
-
-double* vector(size_t m, double val){
-	int i;
-	if (m <= 0)
-	return NULL;
-
-	double* A = (double*)malloc(m * sizeof(double));
-
-	for(i=0; i<m; i++){
-		A[i] = val;
-	}
-	return A;
-}
-
-void mxv(int m, int n, double* a, double* b, double* c){
-	if (m<=0 || n<=0 || a==NULL || b==NULL || c==NULL){
-		fprintf(stderr,"%s: Illegal input\n",__func__);
-		return;
-	}
-	int i,j;
-	double sum;
-	#pragma omp target teams loop \
-		num_teams(108) thread_limit(64) \
-		map(to: b[0: m * n], c[0:m]) map(from: a[0:m]) \
-		private(i, j, sum) 
-	for (i=0;i<m;i++){
-		sum = 0.0;
-		for (j=0;j<n;j++){
-			sum += b[i*n+j]*c[j];
-		}
-		a[i] = sum;
-		//printf("a[%d,%d] = %f\n",i,j,sum);
-	}
-}
