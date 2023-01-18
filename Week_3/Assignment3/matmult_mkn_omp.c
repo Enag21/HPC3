@@ -7,17 +7,29 @@ void matmult_mkn_omp(int m,int n,int k,double *A,double *B,double *C){
 		return;
 	}
 	
-	for (int pp=0;pp<(m*n);pp++){
-		C[pp]=0.0;
-	}
-	
-	for (int i=0;i<m;i++){
-		for (int l=0;l<k;l++){
-			for (int j=0;j<n;j++){
-				C[i*n+j]+=A[i*k+l]*B[l*n+j];
-			}
-		}
-	}
+    int i, j, l, pp;
+
+    #pragma omp parallel shared(A, B, C, m, n, k) private(pp, i, l, j)
+    {
+        #pragma omp for
+        for (pp = 0;pp < (m * n); pp++)
+        {
+            C[pp] = 0.0;
+        }
+        
+        #pragma omp for collapse(2)
+        for (i = 0; i < m; i++)
+        {
+            for (l = 0; l < k; l++)
+            {
+                double a = A[i * k + l];
+                for (j = 0; j < n; j++)
+                {
+                    C[i * n + j] += a * B[l * n + j];
+                }
+            }
+        }
+    }
 }
 
 

@@ -1,5 +1,5 @@
 TARGET= libmatmult.so
-OBJS	= matmult.o
+OBJS	= matmult_mkn_omp.o
 
 CC	= nvc
 CXX	= nvc++

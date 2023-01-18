@@ -49,6 +49,8 @@ double mxv_multi(int m, int n, double* a, double* b, double* c){
 
 	double t = omp_get_wtime();
 
+	
+
 	#pragma omp target data device(0) map(to: b[0: (m * n / 2)], c[0:m / 2]) map(from: a[0:m / 2]) 
 	{
 		double t = omp_get_wtime();

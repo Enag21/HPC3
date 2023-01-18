@@ -1,6 +1,8 @@
 #include <stdio.h>
+#include <omp.h>
 
- extern void matmult_mkn_omp(int m,int n,int k,double *A,double *B,double *C){
+extern "C"{
+void matmult_mkn_omp(int m,int n,int k,double *A,double *B,double *C){
 	if (m<=0 || n<=0 || k<=0 || A==NULL || B==NULL || C==NULL){
 		fprintf(stderr,"%s: Illegal input\n",__func__);
 		return;
@@ -16,7 +18,7 @@
             C[pp] = 0.0;
         }
         
-        #pragma omp for collapse(2) nowait
+        #pragma omp for collapse(2) 
         for (i = 0; i < m; i++)
         {
             for (l = 0; l < k; l++)
@@ -30,4 +32,5 @@
         }
     }
 
+}
 }
