@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <omp.h>
 #define MIN(x,y) ((x<y)?x:y)
-#define BS 4
+#define BS 16
 
 extern "C" 
 {
