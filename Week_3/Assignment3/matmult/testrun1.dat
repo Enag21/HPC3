@@ -1,0 +1,11 @@
+Memory[kbytes] Mflop/s  Diff Function
+   23437.500  25518.182 0 # matmult_mkn_omp
+   93750.000  17144.309 248 # matmult_mkn_omp
+  210937.500  16440.541 2752 # matmult_mkn_omp
+  375000.000  15247.075 16000 # matmult_mkn_omp
+  585937.500  15221.678 33280 # matmult_mkn_omp
+  843750.000  15291.800 81408 # matmult_mkn_omp
+ 1148437.500  15297.461 196608 # matmult_mkn_omp
+ 1500000.000  14990.309 561152 # matmult_mkn_omp
+ 1898437.500  15236.253 634880 # matmult_mkn_omp
+ 2343750.000  15281.221 1.04858e+06 # matmult_mkn_omp
