@@ -8,10 +8,15 @@ void matmult_blk_omp(int m,int n,int k,double *A,double *B,double *C, int bs){
 		return;
 	}
 	
+	#pragma omp parallel// default(none) shared(m,n,k,A,B,C,bs)
+	{
+	
+	#pragma omp for
 	for (int pp=0;pp<(m*n);pp++){
 		C[pp]=0.0;
 	}
 	
+	#pragma omp for
 	for (int i1=0;i1<m;i1+=bs){
 		int ilim=MIN(m-i1,bs);
 		for (int l1=0;l1<k;l1+=bs){
@@ -28,5 +33,7 @@ void matmult_blk_omp(int m,int n,int k,double *A,double *B,double *C, int bs){
 			}
 		}
 	}
+	
+	}  // end of parallel
 }
 
