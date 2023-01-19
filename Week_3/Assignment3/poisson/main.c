@@ -25,18 +25,13 @@ main(int argc, char *argv[]) {
     int 	iter_max = 1000;
     double	tolerance;
     double	start_T;
-	int cores;
+	int cores=0;
     int		output_type = 0;
     char	*output_prefix = "poisson_res";
     char        *output_ext    = "";
     char	output_filename[FILENAME_MAX];
     double 	***u = NULL;
-    
-    #ifdef _OPENMP
     double t1,t2;
-	#else
-	clock_t t1,t2;
-	#endif
 
     /* get the paramters from the command line */
     N         = atoi(argv[1]);	// grid size
@@ -81,20 +76,15 @@ main(int argc, char *argv[]) {
 	double*** u_aux_d = target_malloc_3d(N+2, N+2, N+2, &u_aux_data);
 
 
-	#ifdef _OPENMP 
-	t1=omp_get_wtime();
-	#else
-	t1=clock();
-	#endif
-	
-	
 	// defining f and initializing first guess and initializing boundary conditions
 	init(u,u_aux,f,N,start_T);
+
 
 	// Copying data from host to device
 	omp_target_memcpy(	u_data, u[0][0], 
 						(N + 2) * (N + 2) * (N + 2) * sizeof(double),
 						0, 0, omp_get_default_device(), omp_get_initial_device());
+
 
 	omp_target_memcpy(	u_aux_data, u_aux[0][0], 
 					(N + 2) * (N + 2) * (N + 2) * sizeof(double),
@@ -105,22 +95,18 @@ main(int argc, char *argv[]) {
 						0, 0, omp_get_default_device(), omp_get_initial_device());
 
 	
+	
+	t1=omp_get_wtime();
 	jacobi_no_norm(u_d,u_aux_d,f_d,N,iter_max);
-
-
-	//printf("%d           %d                  %lf                  ",N,it,tolerance);
+	t2=omp_get_wtime();
 
 	omp_target_memcpy(u[0][0], u_data,
 					(N + 2) * (N + 2) * (N + 2) * sizeof(double),
-					0, 0, omp_get_default_device(), omp_get_initial_device());
+					0, 0, omp_get_initial_device(),omp_get_default_device());
 
-	#ifdef _OPENMP
-	t2=omp_get_wtime();
 	printf("%lf             %d \n",t2-t1, cores);
-	#else
-	t2=clock();
-	printf("%lf\n",(double) (t2-t1)/(CLOCKS_PER_SEC));
-	#endif
+    
+    
     
     // dump  results if wanted 
     switch(output_type) {

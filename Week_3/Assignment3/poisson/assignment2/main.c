@@ -93,7 +93,7 @@ main(int argc, char *argv[]) {
 	int it=gauss_seidel(u,u_aux,f,N,iter_max,&tolerance);
 	#endif
 
-	printf("%d           %d                  %lf                  ",N,it,tolerance);
+	//printf("%d           %d                  %lf                  ",N,it,tolerance);
 
 	#ifdef _OPENMP
 	t2=omp_get_wtime();

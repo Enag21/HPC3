@@ -39,7 +39,7 @@ jacobi(double ***u,double ***u_aux,double ***f,int N,int iter_max,double *tol) {
 	double d=DBL_MAX;
 	int it=0;
 	
-	while (d > *tol && it<iter_max){
+	while (it<iter_max){
 		
 		// copy u to u_aux
 		#pragma omp parallel for default(none) private(i,j,k) shared(u,u_aux,N,h,f,pp) collapse(2)
@@ -71,7 +71,7 @@ jacobi(double ***u,double ***u_aux,double ***f,int N,int iter_max,double *tol) {
 			}
 		}
 		
-		d=norm(u,u_aux,N);
+		//d=norm(u,u_aux,N);
 		it++;
 
 	}

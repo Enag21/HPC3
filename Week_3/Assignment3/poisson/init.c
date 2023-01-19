@@ -18,7 +18,6 @@ void init(double ***u,double ***u_aux,double ***f,int N,double start_T){
 	}	
 
 	// defining f_{ijk}
-	
 	 for (i=0;i<=nlim;i++){
 	 	double x = -1.0 + (double) i*h;
 		int xm = x<=-3.0/8.0;

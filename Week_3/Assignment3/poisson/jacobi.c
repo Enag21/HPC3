@@ -39,13 +39,13 @@ jacobi_no_norm(double ***u,double ***u_aux,double ***f,int N,int iter_max) {
 	
 	for(int it = 0; it < iter_max; it++) 
 	{
-		
 		// copy u to u_aux
-		#pragma omp target teams parallel for collapse(2) is_device_ptr(u, u_aux, f)
+		#pragma omp target teams distribute collapse(2) is_device_ptr(u, u_aux, f)
 		for (int i=1;i<=N;i++){
 			for (int j=1;j<=N;j++){
 					double* aux_1 = u_aux[i][j];
 					double* aux_2 = u[i][j];
+				#pragma omp parallel for schedule(static,1)
 				for (int k=1;k<=N;k++){
 					aux_1[k]=aux_2[k];
 				}
@@ -53,9 +53,10 @@ jacobi_no_norm(double ***u,double ***u_aux,double ***f,int N,int iter_max) {
 		}
 		
 		// updating u
-		#pragma omp target teams parallel for collapse(2) is_device_ptr(u, u_aux, f)
+		#pragma omp target teams distribute collapse(2) is_device_ptr(u, u_aux, f)
 		for (int i=1;i<=N;i++){
 			for (int j=1;j<=N;j++){
+
 				double* x_1 = u_aux[i - 1][j];
 				double* x_2 = u_aux[i + 1][j];
 				double* x_3 = u_aux[i][j - 1];
@@ -63,11 +64,14 @@ jacobi_no_norm(double ***u,double ***u_aux,double ***f,int N,int iter_max) {
 				double* x_5 = u_aux[i][j];
 				double* x_6 = f[i][j];
 				double* x = u[i][j];
+
+				#pragma omp parallel for schedule(static,1)
 				for (int k=1;k<=N;k++){
+
 					x[k]=(x_1[k]+x_2[k]+x_3[k]+x_4[k]
 					+x_5[k-1]+x_5[k+1]+h*h*x_6[k] )*pp;
 				}
 			}
 		}
-	}
+	}	
 }
