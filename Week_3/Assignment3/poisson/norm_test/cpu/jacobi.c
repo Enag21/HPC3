@@ -39,13 +39,12 @@ jacobi(double ***u,double ***u_aux,double ***f,int N,int iter_max,double *tol) {
 	double d=DBL_MAX;
 	int it=0;
 	
-	while (d > *tol || it<iter_max){
+	while (d > *tol && it<iter_max){
 		
 		// updating u
-		#pragma omp parallel for default(none) private(i,j,k) shared(u,u_aux,N,h,f,pp) collapse(2)
+		#pragma omp parallel for shared(u,u_aux,N,h,f,pp) collapse(2)
 		for (int i=1;i<=N;i++){
 			for (int j=1;j<=N;j++){
-				// #pragma omp parallel for 
 				for (int k=1;k<=N;k++){
 
 					u[i][j][k]=(u_aux[i - 1][j][k]+u_aux[i + 1][j][k]+u_aux[i][j - 1][k]+u_aux[i][j + 1][k]

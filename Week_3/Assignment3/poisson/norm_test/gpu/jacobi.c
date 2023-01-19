@@ -41,7 +41,7 @@ jacobi(double ***u,double ***u_aux,double ***f,int N,int iter_max, double* tol) 
 		map(alloc: u[0:N + 2][0:N + 2][0:N + 2], u_aux[0:N + 2][0:N + 2][0:N + 2], f[0:N + 2][0:N + 2][0:N + 2])
 	
 	double t = omp_get_wtime();
-	while ( d > *tol ||  it < iter_max)
+	while ( d > *tol &&  it < iter_max)
 	{	
 		// updating u
 		#pragma omp target teams distribute parallel for collapse(3)
