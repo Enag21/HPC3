@@ -30,7 +30,7 @@ main(int argc, char *argv[]) {
     int 	iter_max = 1000;
     double	tolerance;
     double	start_T;
-	int cores;
+	int cores = 0;
     int		output_type = 0;
     char	*output_prefix = "poisson_res";
     char        *output_ext    = "";
@@ -75,15 +75,16 @@ main(int argc, char *argv[]) {
     	exit(-1);
 	}
 	
+	
+	
+	// defining f and initializing first guess and initializing boundary conditions
+	init(u,u_aux,f,N,start_T);
+	
 	#ifdef _OPENMP 
 	t1=omp_get_wtime();
 	#else
 	t1=clock();
 	#endif
-	
-	
-	// defining f and initializing first guess and initializing boundary conditions
-	init(u,u_aux,f,N,start_T);
 
 	#ifdef _JACOBI
 	int it=jacobi(u,u_aux,f,N,iter_max,&tolerance);
