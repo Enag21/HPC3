@@ -49,56 +49,44 @@ jacobi_no_norm( double ***u0 ,double ***u_aux0 ,double ***f0,
 	for(int it = 0; it < iter_max; it++) 
 	{
 		// updating u for device (0)
-		#pragma omp target teams distribute collapse(2) device(0) is_device_ptr(u0, u_aux0, u_aux1, f0) nowait
-		for (int i=1;i<=N / 2;i++){
-			for (int j=1;j<=N / 2;j++){
+ 		#pragma omp target teams distribute parallel for collapse(3) device(0) is_device_ptr(u0, u_aux0, f0) nowait
+		for (int i=1; i < ((N + 2) / 2) - 1;i++){
+			for (int j=1;j<=N;j++){
+				for (int k=1;k<=N;k++){
 
-				double* x_1 = u_aux0[i - 1][j];
-				double* x_2 = u_aux0[i + 1][j];
-				if( i == N /2)
-				{
-					x_2 = u_aux1[0][j];
-				}
-				double* x_3 = u_aux0[i][j - 1];
-				double* x_4 = u_aux0[i][j + 1];
-				double* x_5 = u_aux0[i][j];
-				double* x_6 = f0[i][j];
-				double* x = u0[i][j];
-
-				#pragma omp parallel for 
-				for (int k=1;k<=N / 2;k++){
-
-					x[k]=(x_1[k]+x_2[k]+x_3[k]+x_4[k]
-					+x_5[k-1]+x_5[k+1]+h*h*x_6[k] )*pp;
+					u0[i][j][k]=(u_aux0[i - 1][j][k]+u_aux0[i + 1][j][k]+u_aux0[i][j - 1][k]+u_aux0[i][j + 1][k]
+					+u_aux0[i][j][k-1]+u_aux0[i][j][k+1]+h*h*f0[i][j][k] )*pp;
 				}
 			}
+		} 
+
+		int i_d0 = ((N + 2) / 2) - 1; // index for last layer in gpu 0
+		int i_d1 = 0; // index in last layer for gpu 1
+
+		#pragma omp target teams distribute is_device_ptr(u0, u_aux0, f0, u1, u_aux1, f1) nowait
+		for(int j = 1; j <= N; j++)
+		{
+			#pragma omp parallel for
+			for(int k = 1; k <= N; k++)
+			{
+				u0[i_d0][j][k] = pp *(u_aux0[i_d0 - 1][j][k] + u_aux1[0][j][k] + u_aux0[i_d0][j - 1][k] + u_aux0[i_d0][j + 1][k] 
+											+ u_aux0[i_d0][j][k - 1] + u_aux0[i_d0][j][k + 1] + h * h *f0[i_d0][j][k]);
+				u1[i_d1][j][k] = pp * (u_aux0[i_d0][j][k] + + u_aux1[i_d1 + 1][j][k] + u_aux1[i_d1][j - 1][k] + u_aux1[i_d1][j + 1][k] 
+											+ u_aux1[i_d1][j][k - 1] + u_aux1[i_d1][j][k + 1] + h * h *f1[i_d1][j][k]);
+			}
 		}
+
 		// update u for device (1)
-		#pragma omp target teams distribute collapse(2) device(1) is_device_ptr(u1, u_aux1, u_aux0, f1) nowait
-		for (int i=0;i<=N / 2;i++){
-			for (int j=1;j<=N / 2;j++){
-
-				double* x_1 = u_aux1[i - 1][j];
-				if (i == 0)
-				{
-					x_1 = u_aux0[N / 2][j];
-				}
-				double* x_2 = u_aux1[i + 1][j];
-				double* x_3 = u_aux1[i][j - 1];
-				double* x_4 = u_aux1[i][j + 1];
-				double* x_5 = u_aux1[i][j];
-				double* x_6 = f1[i][j];
-				double* x = u1[i][j];
-
-				#pragma omp parallel for 
-				for (int k=1;k<=N / 2;k++){
-
-					x[k]=(x_1[k]+x_2[k]+x_3[k]+x_4[k]
-					+x_5[k-1]+x_5[k+1]+h*h*x_6[k] )*pp;
+   		#pragma omp target teams distribute parallel for collapse(3) device(1) is_device_ptr(u1, u_aux1, f1) nowait
+		for (int i=1;i < ((N + 2) / 2) - 1;i++){
+			for (int j=1;j <= N;j++){
+				for (int k=1;k<=N;k++){
+					u1[i][j][k]=(u_aux1[i - 1][j][k]+u_aux1[i + 1][j][k]+u_aux1[i][j - 1][k]+u_aux1[i][j + 1][k]
+					+u_aux1[i][j][k-1]+u_aux1[i][j][k+1]+h*h*f1[i][j][k] )*pp;
 				}
 			}
-		}
-		#pragma omp taskwait
+		} 
+		#pragma omp taskwait 
 
 		//device (0) 
 		double*** tmp = u0;

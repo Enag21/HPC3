@@ -40,23 +40,14 @@ jacobi_no_norm(double ***u,double ***u_aux,double ***f,int N,int iter_max) {
 	for(int it = 0; it < iter_max; it++) 
 	{		
 		// updating u
-		#pragma omp target teams distribute collapse(2) is_device_ptr(u, u_aux, f)
+		#pragma omp target teams distribute parallel for collapse(3) is_device_ptr(u, u_aux, f)
 		for (int i=1;i<=N;i++){
 			for (int j=1;j<=N;j++){
-
-				double* x_1 = u_aux[i - 1][j];
-				double* x_2 = u_aux[i + 1][j];
-				double* x_3 = u_aux[i][j - 1];
-				double* x_4 = u_aux[i][j + 1];
-				double* x_5 = u_aux[i][j];
-				double* x_6 = f[i][j];
-				double* x = u[i][j];
-
-				#pragma omp parallel for 
+				// #pragma omp parallel for 
 				for (int k=1;k<=N;k++){
 
-					x[k]=(x_1[k]+x_2[k]+x_3[k]+x_4[k]
-					+x_5[k-1]+x_5[k+1]+h*h*x_6[k] )*pp;
+					u[i][j][k]=(u_aux[i - 1][j][k]+u_aux[i + 1][j][k]+u_aux[i][j - 1][k]+u_aux[i][j + 1][k]
+					+u_aux[i][j][k-1]+u_aux[i][j][k+1]+h*h*f[i][j][k] )*pp;
 				}
 			}
 		}
