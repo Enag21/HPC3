@@ -38,20 +38,7 @@ jacobi_no_norm(double ***u,double ***u_aux,double ***f,int N,int iter_max) {
 	double pp=1.0/6.0;
 	
 	for(int it = 0; it < iter_max; it++) 
-	{
-		// copy u to u_aux
-		#pragma omp target teams distribute collapse(2) is_device_ptr(u, u_aux, f)
-		for (int i=1;i<=N;i++){
-			for (int j=1;j<=N;j++){
-					double* aux_1 = u_aux[i][j];
-					double* aux_2 = u[i][j];
-				#pragma omp parallel for
-				for (int k=1;k<=N;k++){
-					aux_1[k]=aux_2[k];
-				}
-			}
-		}
-		
+	{		
 		// updating u
 		#pragma omp target teams distribute collapse(2) is_device_ptr(u, u_aux, f)
 		for (int i=1;i<=N;i++){
@@ -73,5 +60,12 @@ jacobi_no_norm(double ***u,double ***u_aux,double ***f,int N,int iter_max) {
 				}
 			}
 		}
-	}	
+
+		double ***tmp = u;
+		u = u_aux;
+		u_aux = tmp;
+	}
+	double ***tmp = u;
+	u = u_aux;
+	u_aux = tmp;
 }

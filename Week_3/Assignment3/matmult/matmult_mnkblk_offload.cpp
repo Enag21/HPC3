@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <omp.h>
 #define MIN(x,y) ((x<y)?x:y)
-#define BS 16
+#define BS 8
 
 extern "C" 
 {
@@ -18,7 +18,7 @@ extern "C"
         #pragma omp target teams distribute parallel for collapse(2) 
         for (int i1 = 0; i1 < m; i1 += BS)
         {
-            for (int j = 0; j < n; j++)
+            for (int j = 0; j < n; j++) // 
             {
                 double sum[BS]={};
                 for (int l = 0; l < k; l++)

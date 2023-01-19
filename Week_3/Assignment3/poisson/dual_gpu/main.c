@@ -76,13 +76,13 @@ main(int argc, char *argv[]) {
 // -----------------------------------------
 	omp_set_default_device(0);
 	double* u_data0;
-	double*** u_d0 = target_malloc_3d((N+2) / 2, (N+2) / 2, (N+2) / 2, &u_data0);
+	double*** u_d0 = target_malloc_3d((N+2) / 2, (N+2), (N+2), &u_data0);
 
 	double* f_data0;
-	double*** f_d0 = target_malloc_3d((N+2) / 2, (N+2) / 2, (N+2) / 2, &f_data0);
+	double*** f_d0 = target_malloc_3d((N+2) / 2, (N+2), (N+2), &f_data0);
 
 	double* u_aux_data0;
-	double*** u_aux_d0 = target_malloc_3d((N+2) / 2, (N+2) / 2, (N+2) / 2, &u_aux_data0);
+	double*** u_aux_d0 = target_malloc_3d((N+2) / 2, (N+2), (N+2), &u_aux_data0);
 
 // -----------------------------------------
 //
@@ -91,13 +91,13 @@ main(int argc, char *argv[]) {
 // -----------------------------------------
 	omp_set_default_device(1);
 	double* u_data1;
-	double*** u_d1 = target_malloc_3d((N+2) / 2, (N+2) / 2, (N+2) / 2, &u_data1);
+	double*** u_d1 = target_malloc_3d((N+2) / 2, (N+2), (N+2), &u_data1);
 
 	double* f_data1;
-	double*** f_d1 = target_malloc_3d((N+2) / 2, (N+2) / 2, (N+2) / 2, &f_data1);
+	double*** f_d1 = target_malloc_3d((N+2) / 2, (N+2), (N+2), &f_data1);
 
 	double* u_aux_data1;
-	double*** u_aux_d1 = target_malloc_3d((N+2) / 2, (N+2) / 2, (N+2) / 2, &u_aux_data1);
+	double*** u_aux_d1 = target_malloc_3d((N+2) / 2, (N+2), (N+2), &u_aux_data1);
 
 // -----------------------------------------
 //
@@ -114,16 +114,16 @@ main(int argc, char *argv[]) {
 // -----------------------------------------
 	omp_set_default_device(0);
 	omp_target_memcpy(	u_data0, u[0][0], 
-						(((N + 2) * (N + 2) * (N + 2)) / 8)* sizeof(double),
+						(((N + 2) * (N + 2) * (N + 2)) / 2)* sizeof(double),
 						0, 0, omp_get_default_device(), omp_get_initial_device());
 
 
 	omp_target_memcpy(	u_aux_data0, u_aux[0][0], 
-					(((N + 2) * (N + 2) * (N + 2)) / 8) * sizeof(double),
+					(((N + 2) * (N + 2) * (N + 2)) / 2) * sizeof(double),
 					0, 0, omp_get_default_device(), omp_get_initial_device());
 
 	omp_target_memcpy(	f_data0, f[0][0], 
-						(((N + 2) * (N + 2) * (N + 2)) / 8) * sizeof(double),
+						(((N + 2) * (N + 2) * (N + 2)) / 2) * sizeof(double),
 						0, 0, omp_get_default_device(), omp_get_initial_device());
 	
 // -----------------------------------------
@@ -134,17 +134,17 @@ main(int argc, char *argv[]) {
 // We need to offset the memory copied in device (0)
 	omp_set_default_device(1);
 	omp_target_memcpy(	u_data1, u[0][0], 
-						(((N + 2) * (N + 2) * (N + 2)) / 8)* sizeof(double),
-						0, (((N + 2) * (N + 2) * (N + 2)) / 8), omp_get_default_device(), omp_get_initial_device());
+						(((N + 2) * (N + 2) * (N + 2)) / 2)* sizeof(double),
+						0, (((N + 2) * (N + 2) * (N + 2)) / 2), omp_get_default_device(), omp_get_initial_device());
 
 
 	omp_target_memcpy(	u_aux_data1, u_aux[0][0], 
-					(((N + 2) * (N + 2) * (N + 2)) / 8) * sizeof(double),
-					0, (((N + 2) * (N + 2) * (N + 2)) / 8), omp_get_default_device(), omp_get_initial_device());
+					(((N + 2) * (N + 2) * (N + 2)) / 2) * sizeof(double),
+					0, (((N + 2) * (N + 2) * (N + 2)) / 2), omp_get_default_device(), omp_get_initial_device());
 
 	omp_target_memcpy(	f_data1, f[0][0], 
-						(((N + 2) * (N + 2) * (N + 2)) / 8) * sizeof(double),
-						0, (((N + 2) * (N + 2) * (N + 2)) / 8), omp_get_default_device(), omp_get_initial_device());
+						(((N + 2) * (N + 2) * (N + 2)) / 2) * sizeof(double),
+						0, (((N + 2) * (N + 2) * (N + 2)) / 2), omp_get_default_device(), omp_get_initial_device());
 
 	
 // -----------------------------------------
@@ -153,7 +153,8 @@ main(int argc, char *argv[]) {
 //
 // -----------------------------------------
 	t1=omp_get_wtime();
-	jacobi_no_norm(u_d,u_aux_d,f_d,N,iter_max);
+	jacobi_no_norm( u_d0 ,u_aux_d0 ,f_d0, 
+					u_d1 ,u_aux_d1 ,f_d1, N,iter_max);
 	t2=omp_get_wtime();
 
 
@@ -164,14 +165,14 @@ main(int argc, char *argv[]) {
 // -----------------------------------------
 	omp_set_default_device(0);
 	omp_target_memcpy(u[0][0], u_data0,
-					(((N + 2) * (N + 2) * (N + 2)) / 8) * sizeof(double),
+					(((N + 2) * (N + 2) * (N + 2)) / 2) * sizeof(double),
 					0, 0, omp_get_initial_device(), omp_get_default_device());
 
 	// offset destination memory
 	omp_set_default_device(1);
 	omp_target_memcpy(u[0][0], u_data0,
-					(((N + 2) * (N + 2) * (N + 2)) / 8) * sizeof(double),
-					(((N + 2) * (N + 2) * (N + 2)) / 8), 0, omp_get_initial_device(), omp_get_default_device());
+					(((N + 2) * (N + 2) * (N + 2)) / 2) * sizeof(double),
+					(((N + 2) * (N + 2) * (N + 2)) / 2), 0, omp_get_initial_device(), omp_get_default_device());
 
 
 
@@ -210,7 +211,7 @@ main(int argc, char *argv[]) {
 	target_free_3d(u_d0, u_data0);
 	target_free_3d(u_aux_d0, u_aux_data0);
 	target_free_3d(f_d0, f_data0);
-	
+
 	omp_set_default_device(1);
 	target_free_3d(u_d1, u_data1);
 	target_free_3d(u_aux_d1, u_aux_data1);
