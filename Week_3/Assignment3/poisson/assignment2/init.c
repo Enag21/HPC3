@@ -16,6 +16,7 @@ void init(double ***u,double ***u_aux,double ***f,int N,double start_T){
 		for (j=1;j<=N;j++){
 			for (k=1;k<=N;k++){
 				x[j][k]=start_T;
+				u_aux[i][j][k] = start_T;
 			}
 		}
 	}	
