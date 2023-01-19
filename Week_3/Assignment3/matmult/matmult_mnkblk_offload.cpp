@@ -15,7 +15,7 @@ extern "C"
         #pragma omp target enter data \
                 map(to: A[0: m * k], B[0: k * n]) map(alloc: C[0:m * n])
 
-        #pragma omp target teams distribute parallel for collapse(2)
+        #pragma omp target teams distribute parallel for collapse(2) 
         for (int i1 = 0; i1 < m; i1 += BS)
         {
             for (int j = 0; j < n; j++)
