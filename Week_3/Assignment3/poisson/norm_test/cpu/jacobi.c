@@ -1,10 +1,9 @@
 /* jacobi.c - Poisson problem in 3d
- * c
+ * 
  */
 #include <math.h>
 #include <float.h>
 #include <stdio.h>
-#include "jacobi.h"
 
 
 #ifdef _OPEN_MP
@@ -31,16 +30,19 @@ double norm(double ***a,double ***b,int N){
 	return sqrt(sum);
 }
 
-void
-jacobi_no_norm(double ***u,double ***u_aux,double ***f,int N,int iter_max) {
+int
+jacobi(double ***u,double ***u_aux,double ***f,int N,int iter_max,double *tol) {
 
+	int i,j,k;
 	double h=2.0/(N+1.0);
 	double pp=1.0/6.0;
-
-	for(int it = 0; it < iter_max; it++) 
-	{		
+	double d=DBL_MAX;
+	int it=0;
+	
+	while (d > *tol || it<iter_max){
+		
 		// updating u
-		#pragma omp target teams distribute parallel for collapse(3) is_device_ptr(u, u_aux, f)
+		#pragma omp parallel for default(none) private(i,j,k) shared(u,u_aux,N,h,f,pp) collapse(2)
 		for (int i=1;i<=N;i++){
 			for (int j=1;j<=N;j++){
 				// #pragma omp parallel for 
@@ -55,8 +57,12 @@ jacobi_no_norm(double ***u,double ***u_aux,double ***f,int N,int iter_max) {
 		double ***tmp = u;
 		u = u_aux;
 		u_aux = tmp;
+		d=norm(u,u_aux,N);
+		it++;
 	}
 	double ***tmp = u;
 	u = u_aux;
 	u_aux = tmp;
+	*tol=d;
+	return it;
 }
