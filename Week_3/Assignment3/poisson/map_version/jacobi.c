@@ -60,6 +60,7 @@ jacobi_no_norm(double ***u,double ***u_aux,double ***f,int N,int iter_max) {
 		u = u_aux;
 		u_aux = tmp;
 	}
+	
 	double ***tmp = u;
 	u = u_aux;
 	u_aux = tmp;
