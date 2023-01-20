@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# 02614 - High-Performance Computing, January 2022
+# 
+#BSUB -J part2_cpu_norm
+#BSUB -oo part2.out
+#BSUB -eo part2.err
+#BSUB -q hpcintrogpu
+#BSUB -n 32
+#BSUB -R "rusage[mem=5120]"
+#BSUB -W 60
+#BSUB -R "span[hosts=1]"
+#BSUB -gpu "num=1" 
+
+#./matmult_f.nvc++ mkn_omp 100 100 100
+EXECUTABLE=poisson
+
+# 16 threads chosen
+T=26
+
+#lscpu
+
+i=1
+FOLDER="data1/"
+OUT="${FOLDER}cpu_norm"
+EXT=".dat"
+OUTPUT=$OUT$EXT
+
+# header for data file
+echo "Size,Iterations,Runtime,Type" > $OUTPUT
+# just for gnuplot
+for SIZES in {1000..10000..1000}
+do
+    OMP_NUM_THREADS=$T ./$EXECUTABLE $SIZES 1000 1e-5 0 $T >> $OUTPUT
+done
