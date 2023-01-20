@@ -12,23 +12,17 @@
 void
 jacobi_no_norm( double ***u0 ,double ***u_aux0 ,double ***f0, 
 				double ***u1 ,double ***u_aux1 ,double ***f1, int N, int iter_max) {
-
 	double h=2.0/(N+1.0);
 	double pp=1.0/6.0;
-
-	cudaSetDevice(0);
-	cudaDeviceEnablePeerAccess(1, 0); // (dev 1, future flag)
-	cudaSetDevice(1);
-	cudaDeviceEnablePeerAccess(0, 0); // (dev 0, future flag)
-	cudaSetDevice(0);
+	
 	
 	for(int it = 0; it < iter_max; it++) 
 	{
 		// updating u for device (0)
-		//omp_set_default_device(0);
-		#pragma omp target is_device_ptr(u0, u_aux0, f0) device(0) nowait
+		omp_set_default_device(0);
+		//#pragma omp target  is_device_ptr(u0, u_aux0, f0) device(0) nowait
 		{
-			#pragma omp teams distribute parallel for collapse(3)  
+			#pragma omp target teams distribute parallel for collapse(3) is_device_ptr(u0, u_aux0, f0) nowait
 			for (int i=1; i < ((N + 2) / 2) - 1;i++){
 				for (int j=1;j<=N;j++){
 					for (int k=1;k<=N;k++){
@@ -55,12 +49,11 @@ jacobi_no_norm( double ***u0 ,double ***u_aux0 ,double ***f0,
 											+ u_aux1[i_d1][j][k - 1] + u_aux1[i_d1][j][k + 1] + h * h *f1[i_d1][j][k]);
 			}
 		}
-
-		//omp_set_default_device(1);
-		// update u for device (1)
-		#pragma omp target is_device_ptr(u1, u_aux1, f1) device(1) nowait
+		omp_set_default_device(1);
+		//update u for device (1)
+		//#pragma omp target is_device_ptr(u1, u_aux1, f1) device(1) nowait
 		{
-			#pragma omp teams distribute parallel for collapse(3) 
+			#pragma omp target teams distribute parallel for collapse(3) is_device_ptr(u1, u_aux1, f1) nowait
 			for (int i=1;i < ((N + 2) / 2) - 1;i++){
 				for (int j=1;j <= N;j++){
 					for (int k=1;k<=N;k++){

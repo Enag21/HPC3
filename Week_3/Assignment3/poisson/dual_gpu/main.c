@@ -68,6 +68,12 @@ main(int argc, char *argv[]) {
 		perror("array u: allocation failed");
     	exit(-1);
 	}
+	printf("%d\n", omp_get_num_devices());
+	cudaSetDevice(0);
+	cudaDeviceEnablePeerAccess(1, 0); // (dev 1, future flag)
+	cudaSetDevice(1);
+	cudaDeviceEnablePeerAccess(0, 0); // (dev 0, future flag)
+	cudaSetDevice(0);
 	
 // -----------------------------------------
 //

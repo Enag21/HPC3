@@ -16,7 +16,7 @@ target_malloc_3d(int m, int n, int k, double** data) {
         return NULL;
     }
 
-    #pragma omp target is_device_ptr(p)
+    #pragma omp target teams distribute parallel for is_device_ptr(p)
     for(int i = 0; i < m; i++) {
         p[i] = (double **) p + m + i * n ;
     }
@@ -29,7 +29,7 @@ target_malloc_3d(int m, int n, int k, double** data) {
 	return NULL;
     }
 
-    #pragma omp target is_device_ptr(p, a)
+    #pragma omp target teams distribute parallel for is_device_ptr(p, a)
     for(int i = 0; i < m; i++) {
         for(int j = 0; j < n; j++) {
             p[i][j] = a + (i * n * k) + (j * k);
