@@ -13,23 +13,23 @@
 #BSUB -gpu "num=1" 
 
 #./matmult_f.nvc++ mkn_omp 100 100 100
-EXECUTABLE=poisson
+EXECUTABLE=poisson_j
 
 # 16 threads chosen
-T=26
+T=28
 
 #lscpu
 
 i=1
 FOLDER="data1/"
-OUT="${FOLDER}cpu"
+OUT="${FOLDER}cpu1"
 EXT=".dat"
 OUTPUT=$OUT$EXT
 
 # header for data file
 echo "Size,Iterations,Runtime,Type" > $OUTPUT
 # just for gnuplot
-for SIZES in {100..500..25}
+for SIZES in {100..1000..50}
 do
-    OMP_NUM_THREADS=$T ./$EXECUTABLE $SIZES 2000 1e-5 0 $T >> $OUTPUT
+    OMP_NUM_THREADS=$T ./$EXECUTABLE $SIZES 2000 1e-5 0 >> $OUTPUT
 done

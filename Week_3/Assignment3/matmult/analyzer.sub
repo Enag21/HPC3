@@ -1,0 +1,14 @@
+#!/bin/sh
+#BSUB -J proftest
+#BSUB -q hpcintrogpu
+#BSUB -n 2
+#BSUB -R "span[hosts=1]"
+#BSUB -gpu "num=1:mode=exclusive_process"
+#BSUB -W 10
+#BSUB -R "rusage[mem=2048]"
+
+export TMPDIR=$LSF_JOB_TMPDIR
+module load cuda/11.8
+export MFLOPS_MAXIT=1
+nv-nsight-cu-cli -o profileblk$LSB_JOBID --set full \
+./matmult_f.nvc++ blk_offload 2048 2048 2048

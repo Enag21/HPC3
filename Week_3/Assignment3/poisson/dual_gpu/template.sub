@@ -6,11 +6,11 @@
 #BSUB -oo part2.out
 #BSUB -eo part2.err
 #BSUB -q hpcintrogpu
-#BSUB -n 32
+#BSUB -n 2
 #BSUB -R "rusage[mem=5120]"
 #BSUB -W 60
 #BSUB -R "span[hosts=1]"
-#BSUB -gpu "num=1" 
+#BSUB -gpu "num=2" 
 
 #./matmult_f.nvc++ mkn_omp 100 100 100
 EXECUTABLE=poisson
@@ -25,6 +25,8 @@ FOLDER="data1/"
 OUT="${FOLDER}dual_gpu"
 EXT=".dat"
 OUTPUT=$OUT$EXT
+
+export CUDA_VISIBLE_DEVICES=0,1
 
 # header for data file
 echo "Size,Iterations,Runtime,Type" > $OUTPUT

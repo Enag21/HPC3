@@ -12,23 +12,6 @@
 #include <omp.h>
 #endif
 
-double norm(double ***a,double ***b,int N){
-	// function calculates norm between arrays
-	double sum=0.0;
-
-	#pragma omp target teams distribute parallel for collapse(3) reduction(+: sum) is_device_ptr(a, b)
-	for (int i=1;i<=N;i++){
-		for (int j=1;j<=N;j++){
-			for (int k=1;k<=N;k++){
-				double x=a[i][j][k];
-				double y=b[i][j][k];
-				sum += (x-y)*(x-y);
-			}
-		}
-	}
-	return sqrt(sum);
-}
-
 double
 jacobi(double ***u,double ***u_aux,double ***f,int N,int iter_max, double* tol) {
 
@@ -43,6 +26,7 @@ jacobi(double ***u,double ***u_aux,double ***f,int N,int iter_max, double* tol) 
 	double t = omp_get_wtime();
 	while (it < iter_max)
 	{	
+		double sum = 0.0;
 		// updating u
 		#pragma omp target teams distribute parallel for collapse(3)
 		for (int i=1;i<=N;i++){
@@ -55,11 +39,22 @@ jacobi(double ***u,double ***u_aux,double ***f,int N,int iter_max, double* tol) 
 				}
 			}
 		}
+		#pragma omp target teams distribute parallel for collapse(3) reduction(+: sum) map(to:N)
+		for (int i=1;i<=N;i++){
+			for (int j=1;j<=N;j++){
+				for (int k=1;k<=N;k++){
+					double x=u[i][j][k];
+					double y=u_aux[i][j][k];
+					sum += (x-y)*(x-y);
+				}
+			}
+		}
+		d = sqrt(sum);
+
 		double ***tmp = u;
 		u = u_aux;
 		u_aux = tmp;
 
-		d = norm(u, u_aux, N);
 		it++;
 	}
 	double ***tmp = u;

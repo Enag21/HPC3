@@ -1,0 +1,79 @@
+Size,Iterations,Runtime,Type
+check1
+check
+check2
+check3
+check4
+Fatal error: expression 'HX_CU_CALL_CHECK(p_cuStreamSynchronize(stream))' (value 1) is not equal to expression 'HX_SUCCESS' (value 0)
+check1
+check
+check2
+check1
+check
+check2
+check3
+check4
+Fatal error: expression 'HX_CU_CALL_CHECK(p_cuStreamSynchronize(stream))' (value 1) is not equal to expression 'HX_SUCCESS' (value 0)
+check1
+check
+check2
+check1
+check
+check2
+check3
+check4
+Fatal error: expression 'HX_CU_CALL_CHECK(p_cuStreamSynchronize(stream))' (value 1) is not equal to expression 'HX_SUCCESS' (value 0)
+check1
+check
+check2
+check1
+check
+check2
+check3
+check4
+Fatal error: expression 'HX_CU_CALL_CHECK(p_cuStreamSynchronize(stream))' (value 1) is not equal to expression 'HX_SUCCESS' (value 0)
+check1
+check
+check2
+check1
+check
+check2
+check3
+check4
+Fatal error: expression 'HX_CU_CALL_CHECK(p_cuStreamSynchronize(stream))' (value 1) is not equal to expression 'HX_SUCCESS' (value 0)
+check1
+check
+check2
+check1
+check
+check2
+check3
+check4
+Fatal error: expression 'HX_CU_CALL_CHECK(p_cuStreamSynchronize(stream))' (value 1) is not equal to expression 'HX_SUCCESS' (value 0)
+check1
+check
+check2
+check1
+check
+check2
+check3
+check4
+Fatal error: expression 'HX_CU_CALL_CHECK(p_cuStreamSynchronize(stream))' (value 1) is not equal to expression 'HX_SUCCESS' (value 0)
+check1
+check
+check2
+check1
+check
+check2
+check3
+check4
+Fatal error: expression 'HX_CU_CALL_CHECK(p_cuStreamSynchronize(stream))' (value 1) is not equal to expression 'HX_SUCCESS' (value 0)
+check1
+check
+check2
+check1
+check
+check2
+check3
+check4
+Fatal error: expression 'HX_CU_CALL_CHECK(p_cuStreamSynchronize(stream))' (value 1) is not equal to expression 'HX_SUCCESS' (value 0)

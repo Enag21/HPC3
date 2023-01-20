@@ -2,7 +2,7 @@
 #include <omp.h>
 #define MIN(x,y) ((x<y)?x:y)
 #define SPLITS 5
-#define BS 1
+#define BS 16
 
 extern "C" 
 {

@@ -32,8 +32,7 @@ double norm(double ***a,double ***b,int N){
 	return sqrt(sum);
 }
 
-double
-jacobi_no_norm(double ***u,double ***u_aux,double ***f,int N,int iter_max) {
+double jacobi_no_norm(double ***u,double ***u_aux,double ***f,int N,int iter_max) {
 
 	double h=2.0/(N+1.0);
 	double pp=1.0/6.0;
@@ -51,8 +50,9 @@ jacobi_no_norm(double ***u,double ***u_aux,double ***f,int N,int iter_max) {
 				// #pragma omp parallel for 
 				for (int k=1;k<=N;k++){
 
-					u[i][j][k]=(u_aux[i - 1][j][k]+u_aux[i + 1][j][k]+u_aux[i][j - 1][k]+u_aux[i][j + 1][k]
-					+u_aux[i][j][k-1]+u_aux[i][j][k+1]+h*h*f[i][j][k] )*pp;
+					u[i][j][k]=(u_aux[i - 1][j][k] + u_aux[i + 1][j][k]
+								+u_aux[i][j - 1][k] + u_aux[i][j + 1][k]
+								+u_aux[i][j][k-1] + u_aux[i][j][k+1]+h*h*f[i][j][k] )*pp;
 				}
 			}
 		}

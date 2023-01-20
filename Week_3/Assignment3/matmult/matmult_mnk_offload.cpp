@@ -16,7 +16,7 @@ extern "C"
     
         
         #pragma omp target teams distribute parallel for collapse(2) \
-                num_teams(m) thread_limit(64)
+                num_teams(m * n) limit_threads(64)
         for (int i = 0; i < m; i++)
         {
             for (int j = 0; j < n; j++)

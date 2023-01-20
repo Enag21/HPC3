@@ -1,0 +1,11 @@
+Thr,Type,Size,kbytes,Mflop/s,Err,Function,Blk
+16,lib_offload,1000,23437.500,880946.019,0,matmult_lib_offload,0
+16,lib_offload,2000,93750.000,2065055.281,248,matmult_lib_offload,0
+16,lib_offload,3000,210937.500,3064124.632,2752,matmult_lib_offload,0
+16,lib_offload,4000,375000.000,3921291.507,16000,matmult_lib_offload,0
+16,lib_offload,5000,585937.500,4679572.872,33280,matmult_lib_offload,0
+16,lib_offload,6000,843750.000,5418799.642,81408,matmult_lib_offload,0
+16,lib_offload,7000,1148437.500,6059736.383,196608,matmult_lib_offload,0
+16,lib_offload,8000,1500000.000,6675748.735,561152,matmult_lib_offload,0
+16,lib_offload,9000,1898437.500,7202051.117,634880,matmult_lib_offload,0
+16,lib_offload,10000,2343750.000,7705567.908,1.04858e+06,matmult_lib_offload,0

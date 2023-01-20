@@ -6,7 +6,7 @@
 #BSUB -oo part2.out
 #BSUB -eo part2.err
 #BSUB -q hpcintrogpu
-#BSUB -n 32
+#BSUB -n 2
 #BSUB -R "rusage[mem=5120]"
 #BSUB -W 60
 #BSUB -R "span[hosts=1]"
@@ -22,7 +22,7 @@ T=26
 
 i=1
 FOLDER="data1/"
-OUT="${FOLDER}gpu_norm"
+OUT="${FOLDER}gpu_norm2"
 EXT=".dat"
 OUTPUT=$OUT$EXT
 

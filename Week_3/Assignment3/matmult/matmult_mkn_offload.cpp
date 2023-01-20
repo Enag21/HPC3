@@ -30,6 +30,7 @@ extern "C"
                 double a = A[i * k + l];
                 for (int j = 0; j < n; j++)
                 {
+                    //#pragma omp atomic
                     C[i * n + j] += a * B[l * n + j];
                 }
             }

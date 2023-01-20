@@ -15,7 +15,7 @@
 
 #include "init.h"
 #include "jacobi.h"
-
+#include <cublas.h>
 #define N_DEFAULT 100
 
 int
@@ -74,7 +74,7 @@ main(int argc, char *argv[]) {
 	cudaSetDevice(1);
 	cudaDeviceEnablePeerAccess(0, 0); // (dev 0, future flag)
 	cudaSetDevice(0);
-	
+	printf("check1\n");
 // -----------------------------------------
 //
 //    Allocate memory on device (0)
@@ -90,6 +90,7 @@ main(int argc, char *argv[]) {
 	double* u_aux_data0;
 	double*** u_aux_d0 = target_malloc_3d((N+2) / 2, (N+2), (N+2), &u_aux_data0);
 
+	printf("check\n");
 // -----------------------------------------
 //
 //    Allocate memory on device (1)
@@ -110,8 +111,10 @@ main(int argc, char *argv[]) {
 //    Defining f and initializing first guess and initializing boundary conditions on host
 //
 // -----------------------------------------
+	printf("check2\n");
 	
 	init(u,u_aux,f,N,start_T);
+
 
 // -----------------------------------------
 //
@@ -132,6 +135,7 @@ main(int argc, char *argv[]) {
 						(((N + 2) * (N + 2) * (N + 2)) / 2) * sizeof(double),
 						0, 0, omp_get_default_device(), omp_get_initial_device());
 	
+	printf("check3\n");
 // -----------------------------------------
 //
 //    Copying data from host to device (1)
@@ -152,6 +156,7 @@ main(int argc, char *argv[]) {
 						(((N + 2) * (N + 2) * (N + 2)) / 2) * sizeof(double),
 						0, (((N + 2) * (N + 2) * (N + 2)) / 2), omp_get_default_device(), omp_get_initial_device());
 
+	printf("check4\n");
 	
 // -----------------------------------------
 //

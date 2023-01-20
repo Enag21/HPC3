@@ -1,0 +1,34 @@
+/zhome/d4/9/181446/.lsbatch/1674218886.15227233.shell: line 29: export: `0=0,1': not a valid identifier
+/zhome/d4/9/181446/.lsbatch/1674218886.15227233.shell: line 34:  9480 Aborted                 ./$EXECUTABLE $SIZES 2000 1e-5 0 >> $OUTPUT
+Failing in Thread:1
+call to cuMemcpyHtoDAsync returned error 1: Invalid value
+
+/zhome/d4/9/181446/.lsbatch/1674218886.15227233.shell: line 34:  9492 Aborted                 ./$EXECUTABLE $SIZES 2000 1e-5 0 >> $OUTPUT
+Failing in Thread:1
+call to cuMemcpyHtoDAsync returned error 1: Invalid value
+
+/zhome/d4/9/181446/.lsbatch/1674218886.15227233.shell: line 34:  9503 Aborted                 ./$EXECUTABLE $SIZES 2000 1e-5 0 >> $OUTPUT
+Failing in Thread:1
+call to cuMemcpyHtoDAsync returned error 1: Invalid value
+
+/zhome/d4/9/181446/.lsbatch/1674218886.15227233.shell: line 34:  9515 Aborted                 ./$EXECUTABLE $SIZES 2000 1e-5 0 >> $OUTPUT
+Failing in Thread:1
+call to cuMemcpyHtoDAsync returned error 1: Invalid value
+
+/zhome/d4/9/181446/.lsbatch/1674218886.15227233.shell: line 34:  9526 Aborted                 ./$EXECUTABLE $SIZES 2000 1e-5 0 >> $OUTPUT
+Failing in Thread:1
+call to cuMemcpyHtoDAsync returned error 1: Invalid value
+
+/zhome/d4/9/181446/.lsbatch/1674218886.15227233.shell: line 34:  9538 Aborted                 ./$EXECUTABLE $SIZES 2000 1e-5 0 >> $OUTPUT
+Failing in Thread:1
+call to cuMemcpyHtoDAsync returned error 1: Invalid value
+
+/zhome/d4/9/181446/.lsbatch/1674218886.15227233.shell: line 34:  9551 Aborted                 ./$EXECUTABLE $SIZES 2000 1e-5 0 >> $OUTPUT
+Failing in Thread:1
+call to cuMemcpyHtoDAsync returned error 1: Invalid value
+
+/zhome/d4/9/181446/.lsbatch/1674218886.15227233.shell: line 34:  9564 Aborted                 ./$EXECUTABLE $SIZES 2000 1e-5 0 >> $OUTPUT
+Failing in Thread:1
+call to cuMemcpyHtoDAsync returned error 1: Invalid value
+
+/zhome/d4/9/181446/.lsbatch/1674218886.15227233.shell: line 34:  9577 Aborted                 ./$EXECUTABLE $SIZES 2000 1e-5 0 >> $OUTPUT

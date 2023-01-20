@@ -15,7 +15,7 @@
 #./matmult_f.nvc++ mkn_omp 100 100 100
 EXECUTABLE=matmult_f.nvc++
 
-PERM="mkn_omp blk_omp lib"
+PERM="asy_offload"
 
 # 16 threads chosen
 T=16
@@ -24,11 +24,11 @@ T=16
 # for old version
 BLKSIZE=10
 
-#lscpu
+lscpu
 
 i=1
 FOLDER="data1/"
-OUT="${FOLDER}part1"
+OUT="${FOLDER}asy"
 EXT=".dat"
 OUTPUT=$OUT$EXT
 
@@ -39,7 +39,7 @@ for P in $PERM
 do
 	# just for gnuplot
 	echo "Thr,Type,Size,kbytes,Mflop/s,Err,Function,Blk" > $OUT$P$EXT
-	for SIZES in {1000..10000..1000}
+	for SIZES in {480..10000..480}
 	do
 		if [ $P == "blk_omp" ]
 		then
