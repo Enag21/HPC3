@@ -1,5 +1,6 @@
 #include <stdio.h>
 #define MIN(x,y) ((x<y)?x:y)
+#define BS 10
 
 extern "C"
 {
