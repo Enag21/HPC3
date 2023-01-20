@@ -29,7 +29,7 @@ OUTPUT=$OUT$EXT
 # header for data file
 echo "Size,Iterations,Runtime,Type" > $OUTPUT
 # just for gnuplot
-for SIZES in {1000..10000..1000}
+for SIZES in {100..500..25}
 do
-    OMP_NUM_THREADS=$T ./$EXECUTABLE $SIZES 1000 1e-5 0 $T >> $OUTPUT
+    OMP_NUM_THREADS=$T ./$EXECUTABLE $SIZES 2000 1e-5 0 $T >> $OUTPUT
 done
