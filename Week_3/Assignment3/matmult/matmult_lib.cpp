@@ -1,4 +1,6 @@
+extern "C"{
 #include <cblas.h>
+}
 #include <stdio.h>
 #include <cublas.h>
 #include <cublas_v2.h>
@@ -11,7 +13,7 @@ void matmult_lib(int m,int n,int k,double *A,double *B,double *C){
 	}
 	int lda=k,ldb=n,ldc=n;
 	double alpha=1.0,beta=0.0;
-	cblas_dgemm(CblasRowMajor,CblasNoTrans,CblasNoTrans,m,n,k,alpha,A,lda,B,ldb,beta,C,ldc);
+	cblas_dgemm(CblasRowMajor ,CblasNoTrans, CblasNoTrans, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc);
 }
 
 void matmult_lib_offload(int m,int n,int k,double *A,double *B,double *C){
@@ -80,7 +82,7 @@ void matmult_lib_offload(int m,int n,int k,double *A,double *B,double *C){
 	
 	// call cublas, A, B and C are colmajored in GPU, hence in GPU A^T, B^T and C^T is stored
 	// therefore we want B^T * A^T = C^T
-	cublasDgemm(handle,CUBLAS_OP_N,CUBLAS_OP_N,n,m,k,&alpha,devPtrB,n,devPtrA,k,&beta,devPtrC,n);
+	cublasDgemm(handle, CUBLAS_OP_N, CUBLAS_OP_N, n, m, k, &alpha, devPtrB, n, devPtrA, k, &beta, devPtrC, n);
 	
 	// copy date from GPU to CPU
     stat = cublasGetMatrix (m,n,sizeof(*C),devPtrC,m,C,m);
