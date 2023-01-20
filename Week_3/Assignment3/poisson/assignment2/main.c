@@ -98,7 +98,7 @@ main(int argc, char *argv[]) {
 
 	#ifdef _OPENMP
 	t2=omp_get_wtime();
-	printf("%lf             %d \n",t2-t1, cores);
+	printf("%d,%d,%lf,%s\n",N, iter_max, runtime, "cpu");
 	#else
 	t2=clock();
 	printf("%lf\n",(double) (t2-t1)/(CLOCKS_PER_SEC));

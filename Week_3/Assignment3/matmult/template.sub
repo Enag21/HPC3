@@ -1,0 +1,61 @@
+#!/bin/bash
+
+# 02614 - High-Performance Computing, January 2022
+# 
+#BSUB -J part1
+#BSUB -oo part1.out
+#BSUB -eo part1.err
+#BSUB -q hpcintrogpu
+#BSUB -n 32
+#BSUB -R "rusage[mem=5120]"
+#BSUB -W 60
+#BSUB -R "span[hosts=1]"
+#BSUB -gpu "num=1" 
+
+#./matmult_f.nvc++ mkn_omp 100 100 100
+EXECUTABLE=matmult_f.nvc++
+
+PERM="mkn_omp blk_omp lib"
+
+# 16 threads chosen
+T=16
+
+# uncomment and set a reasonable BLKSIZE for the blk version
+# for old version
+BLKSIZE=10
+
+#lscpu
+
+i=1
+FOLDER="data1/"
+OUT="${FOLDER}part1"
+EXT=".dat"
+OUTPUT=$OUT$EXT
+
+# header for data file
+echo "Thr,Type,Size,kbytes,Mflop/s,Err,Function,Blk" > $OUTPUT
+
+for P in $PERM
+do
+	# just for gnuplot
+	echo "Thr,Type,Size,kbytes,Mflop/s,Err,Function,Blk" > $OUT$P$EXT
+	for SIZES in {1000..10000..1000}
+	do
+		if [ $P == "blk_omp" ]
+		then
+			B=$BLKSIZE
+		else
+			B="0"
+		fi
+	    DATA=$(OMP_NUM_THREADS=$T ./$EXECUTABLE $P $SIZES $SIZES $SIZES $BLKSIZE) 
+		# for python plot
+		echo "$T $P $SIZES $DATA $B" | sed 's/#//g' | sed 's/ \+/,/g' >> $OUTPUT
+		# just for gnuplot
+		echo "$T $P $SIZES $DATA $B" | sed 's/#//g' | sed 's/ \+/,/g' >> $OUT$P$EXT
+	done
+
+done
+
+# plot results
+PLT="${FOLDER}test.plt"
+gnuplot $PLT

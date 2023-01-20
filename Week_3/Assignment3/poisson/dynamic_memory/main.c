@@ -104,7 +104,7 @@ main(int argc, char *argv[]) {
 					(N + 2) * (N + 2) * (N + 2) * sizeof(double),
 					0, 0, omp_get_initial_device(),omp_get_default_device());
 
-	printf("%lf             %d \n",t2-t1, cores);
+	printf("%d,%d,%lf,%s\n",N, iter_max, t2-t1, "dynamic_alloc");
     
     
     

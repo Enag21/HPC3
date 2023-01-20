@@ -70,7 +70,7 @@ main(int argc, char *argv[]) {
 
 	double runtime = jacobi(u,u,f,N,iter_max, &tolerance);
 
-	printf("%lf\n",runtime);
+	printf("%d,%d,%lf,%s\n",N, iter_max, runtime, "gpu_norm");
     
     // dump  results if wanted 
     switch(output_type) {

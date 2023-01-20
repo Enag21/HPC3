@@ -70,7 +70,7 @@ main(int argc, char *argv[]) {
 
 	double runtime = jacobi_no_norm(u,u,f,N,iter_max);
 
-	printf("%lf\n",runtime);
+	printf("%d,%d,%lf,%s\n",N, iter_max, runtime, "map");
     
     // dump  results if wanted 
     switch(output_type) {

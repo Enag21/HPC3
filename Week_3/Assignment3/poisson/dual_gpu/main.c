@@ -68,7 +68,7 @@ main(int argc, char *argv[]) {
 		perror("array u: allocation failed");
     	exit(-1);
 	}
-	printf("%d\n", omp_get_num_devices());
+	//printf("%d\n", omp_get_num_devices());
 	cudaSetDevice(0);
 	cudaDeviceEnablePeerAccess(1, 0); // (dev 1, future flag)
 	cudaSetDevice(1);
@@ -182,8 +182,7 @@ main(int argc, char *argv[]) {
 
 
 
-	printf("%lf\n",t2-t1);
-    
+	printf("%d,%d,%lf,%s\n",N, iter_max, t2-t1, "dual_gpu");
     
     
     // dump  results if wanted 
